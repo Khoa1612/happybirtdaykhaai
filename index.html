@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Sinh Nhật Khả Ái :></title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        body {
+            overflow-x: hidden;
+            background: #fff0f5;
+            color: #333;
+            transition: all 0.5s ease;
+        }
+
+        /* Lock Screen */
+        .lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('anh7.png') center/cover no-repeat; /* Ảnh nền màn hình khóa */
+            background-size: cover; /* Đảm bảo ảnh phủ kín */
+            backdrop-filter: blur(20px) brightness(0.8); /* Tăng độ mờ và giảm độ sáng một chút */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+            color: #fff; /* Chữ màu trắng để nổi bật trên nền tối */
+            text-align: center; /* Căn giữa nội dung */
+        }
+
+        .time {
+            font-size: 5rem; /* Chữ lớn hơn */
+            font-weight: bold; /* Chữ đậm hơn */
+            color: #fff; /* Màu trắng */
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8); /* Bóng đổ đậm hơn */
+            margin-bottom: 10px;
+        }
+
+        .date {
+            font-size: 1.8rem; /* Chữ lớn hơn */
+            color: #eee; /* Màu trắng nhạt hơn một chút */
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7); /* Bóng đổ nhẹ hơn */
+            margin-bottom: 40px;
+        }
+
+        .passcode-container {
+            background: rgba(0, 0, 0, 0.5); /* Nền đen mờ hơn */
+            padding: 25px; /* Padding lớn hơn */
+            border-radius: 15px; /* Bo tròn ít hơn */
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Thêm bóng đổ cho container */
+        }
+
+        .passcode-error {
+            color: #ffdddd; /* Màu đỏ nhạt hơn */
+            font-size: 1.1rem; /* Chữ lớn hơn một chút */
+            margin-bottom: 20px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        .passcode-input {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .passcode-dot {
+            width: 20px; /* Lớn hơn */
+            height: 20px; /* Lớn hơn */
+            border-radius: 50%;
+            border: 3px solid #fff; /* Viền trắng đậm hơn */
+            margin: 0 10px; /* Khoảng cách lớn hơn */
+            transition: background-color 0.3s ease;
+        }
+
+        .passcode-dot.filled {
+            background-color: #fff; /* Chấm tròn màu trắng khi nhập */
+        }
+
+        .passcode-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .passcode-key {
+            width: 70px; /* Lớn hơn */
+            height: 70px; /* Lớn hơn */
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1); /* Nền trắng mờ hơn */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem; /* Chữ số lớn hơn */
+            color: #fff; /* Màu trắng */
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .passcode-key:hover {
+            background: rgba(255, 255, 255, 0.2); /* Hiệu ứng hover đậm hơn */
+        }
+
+        .passcode-key:active {
+            transform: scale(0.95);
+        }
+
+        .passcode-key.empty {
+            visibility: hidden;
+        }
+
+        .passcode-key.delete {
+            font-size: 1.8rem; /* Biểu tượng xóa nhỏ hơn một chút */
+        }
+
+        /* Birthday Container */
+        .birthday-container {
+            display: none; /* Changed from flex to none, then flex on unlock */
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            /* Nền gradient động */
+            background: linear-gradient(135deg, #ffe4e1, #ffccde, #ffb6c1, #ff99cc);
+            background-size: 200% 200%; /* Kích thước lớn hơn để có thể di chuyển */
+            animation: gradientMove 15s ease infinite alternate; /* Hoạt hình di chuyển gradient */
+            position: relative;
+            overflow: hidden; /* Quan trọng để các animation không tràn ra ngoài */
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Balloon Animation */
+        .balloon {
+            position: absolute;
+            width: 70px; /* To hơn một chút */
+            height: 90px;
+            background: radial-gradient(circle at 30%, var(--balloon-color1, #ff6b6b), var(--balloon-color2, #ff99cc));
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            bottom: -100px;
+            cursor: pointer;
+            /* Animation phức tạp hơn */
+            animation: floatBalloon 10s infinite ease-in-out;
+            opacity: 0.9;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 20px;
+            background: #333;
+        }
+
+        @keyframes floatBalloon {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.8; }
+            25% { transform: translateY(-50px) translateX(20px) rotate(5deg); opacity: 0.9; }
+            50% { transform: translateY(-100px) translateX(-20px) rotate(-5deg); opacity: 1; }
+            75% { transform: translateY(-50px) translateX(10px) rotate(3deg); opacity: 0.9; }
+            100% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.8; }
+        }
+
+        .heart-particle {
+            position: absolute;
+            font-size: 20px;
+            color: #ff4757;
+            animation: heartPop 1s ease-out forwards;
+        }
+
+        @keyframes heartPop {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+        }
+
+        /* Falling Star Animation */
+        .falling-star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 5px white, 0 0 10px white, 0 0 15px white;
+            animation: fallAndFade var(--duration) linear forwards;
+            opacity: 0; /* Bắt đầu ẩn */
+            z-index: 5; /* Nằm dưới nội dung chính */
+        }
+
+        @keyframes fallAndFade {
+            0% { transform: translateY(-10vh) translateX(0); opacity: 0; }
+            20% { opacity: 1; } /* Hiện rõ sau 20% */
+            100% { transform: translateY(110vh) translateX(var(--travelX)); opacity: 0; }
+        }
+
+        /* Heart Rain Animation */
+        .heart-rain {
+            position: absolute;
+            font-size: 1.5rem;
+            color: #ff6b6b; /* Màu hồng */
+            animation: heartFall var(--duration) linear forwards;
+            opacity: 0;
+            z-index: 5; /* Nằm dưới nội dung chính */
+            text-shadow: 0 0 5px rgba(255,107,107,0.5);
+        }
+
+        @keyframes heartFall {
+            0% { transform: translateY(-10vh); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translateY(110vh); opacity: 0; }
+        }
+
+        /* Sparkle Trail on Mouse Move */
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #fff, 0 0 10px #ffccde;
+            animation: sparkleFadeOut 0.8s forwards;
+            pointer-events: none; /* Không chặn click */
+            z-index: 99; /* Luôn ở trên cùng */
+        }
+
+        @keyframes sparkleFadeOut {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.1); opacity: 0; }
+        }
+
+        /* Birthday Content */
+        .birthday-content {
+            text-align: center;
+            z-index: 10;
+            max-width: 1000px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #ff4757;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: bounceIn 1s ease-out;
+        }
+
+        /* TV Frame Styling */
+        .tv-frame {
+            position: relative;
+            width: 90%;
+            max-width: 600px; /* Có thể điều chỉnh kích thước TV */
+            margin: 40px auto;
+            background-color: #333; /* Màu thân TV */
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 8px solid #222; /* Viền dày hơn cho cảm giác TV */
+            transition: transform 0.3s ease;
+        }
+
+        .tv-frame:hover {
+            transform: translateY(-5px); /* Hiệu ứng nhấc nhẹ khi hover */
+        }
+
+        .tv-screen {
+            position: relative;
+            width: 100%;
+            /* Tỷ lệ 16:9 */
+            padding-top: 56.25%;
+            background-color: #000;
+            border: 5px solid #000; /* Viền màn hình */
+            border-radius: 8px;
+            overflow: hidden; /* Quan trọng để ảnh không tràn ra ngoài */
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+            transition: background-color 0.5s ease-in-out; /* Để bật/tắt màn hình */
+        }
+
+        .tv-screen.off {
+            background-color: #222; /* Màu khi TV tắt */
+        }
+
+        .tv-screen img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            /* Loại bỏ border, box-shadow từ .main-gallery-display img cũ */
+            border: none;
+            box-shadow: none;
+            transition: opacity 0.5s ease-in-out; /* Chuyển ảnh mượt mà */
+        }
+
+        .tv-screen.off img {
+            opacity: 0 !important; /* Ẩn ảnh khi TV tắt */
+        }
+
+
+        .tv-static-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+            opacity: 0.2; /* Độ mờ của hiệu ứng nhiễu */
+            pointer-events: none; /* Không chặn tương tác chuột */
+            animation: tvStatic 0.1s infinite alternate; /* Hoạt hình nhiễu nhẹ */
+            z-index: 2; /* Nằm trên ảnh */
+        }
+
+        .tv-screen.off .tv-static-effect {
+            opacity: 0.5; /* Nhiễu rõ hơn khi tắt */
+        }
+
+
+        @keyframes tvStatic {
+            0% { transform: scale(1, 1); opacity: 0.1; }
+            100% { transform: scale(1.01, 1.01); opacity: 0.2; }
+        }
+
+        .tv-scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 2px; /* Chiều cao của mỗi vạch quét */
+            opacity: 0.3; /* Độ mờ của vạch quét */
+            pointer-events: none;
+            animation: scanlines 5s linear infinite;
+            z-index: 3; /* Nằm trên hiệu ứng nhiễu */
+        }
+
+        .tv-screen.off .tv-scanlines {
+            opacity: 0.7; /* Vạch quét rõ hơn khi tắt */
+        }
+
+        @keyframes scanlines {
+            to { background-position: 0 100%; }
+        }
+
+        .main-gallery-nav {
+            position: absolute; /* Giữ nguyên vị trí nút */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            z-index: 10; /* Đảm bảo nút ở trên hiệu ứng TV */
+        }
+
+        .tv-screen.off .main-gallery-nav {
+            visibility: hidden; /* Ẩn nút điều hướng khi TV tắt */
+        }
+
+        /* TV Stand */
+        .tv-stand {
+            width: 60%;
+            height: 15px;
+            background-color: #444;
+            border-radius: 0 0 10px 10px;
+            margin-top: 15px;
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.3);
+        }
+
+        /* TV Button Panel */
+        .tv-button-panel {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 5px 15px;
+            background-color: #444;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .tv-button {
+            width: 15px;
+            height: 15px;
+            background-color: #666;
+            border-radius: 50%;
+            border: 1px solid #333;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .tv-button:hover {
+            background-color: #888;
+        }
+
+        .tv-power-button {
+            background-color: #d9534f; /* Màu đỏ nổi bật cho nút nguồn */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), 0 0 5px rgba(217, 83, 79, 0.7); /* Thêm hiệu ứng phát sáng */
+            width: 20px; /* Lớn hơn */
+            height: 20px; /* Lớn hơn */
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tv-power-button::before {
+            content: '⏻'; /* Biểu tượng nguồn */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .tv-power-button:hover {
+            background-color: #c9302c;
+        }
+
+        .tv-speaker {
+            width: 40px;
+            height: 30px;
+            background-color: #555;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            margin-left: 15px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .tv-speaker::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #333 1px, transparent 1px);
+            background-size: 100% 5px; /* Các vạch loa */
+        }
+
+        /* Fullscreen Slideshow */
+        .gallery-slider {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .gallery-slider.active {
+            display: flex;
+        }
+
+        .slider-container {
+            width: 90%;
+            max-width: 800px;
+            height: 70vh;
+            position: relative;
+            display: flex; /* Dùng flexbox để căn giữa ảnh */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            justify-content: center; /* Căn giữa theo chiều ngang */
+        }
+
+        .slider-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Đảm bảo ảnh vừa khung mà không bị cắt hoặc méo */
+            opacity: 0;
+            position: absolute; /* Giữ nguyên position absolute */
+            transition: opacity 0.8s ease-in-out; /* Smoother transition */
+            cursor: pointer;
+            border-radius: 10px; /* Thêm bo tròn nhẹ */
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); /* Thêm bóng đổ nhẹ */
+            border: 5px solid rgba(255, 255, 255, 0.7); /* Thêm viền trắng mỏng */
+            left: 0; /* Đảm bảo không bị lệch */
+            top: 0; /* Đảm bảo không bị lệch */
+            transform: none; /* Reset mọi transform có thể gây lệch */
+        }
+
+        .slider-image.active {
+            opacity: 1;
+        }
+
+        .thumbnail-nav {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            overflow-x: auto;
+            padding: 10px;
+            justify-content: center; /* Center thumbnails */
+            max-width: 80%; /* Limit thumbnail row width */
+        }
+
+        .thumbnail {
+            flex-shrink: 0; /* Prevent shrinking */
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px; /* Thêm bo tròn nhẹ */
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ nhẹ */
+            border: 3px solid rgba(255, 255, 255, 0.7); /* Thêm viền trắng mỏng */
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .thumbnail.active {
+            opacity: 1;
+            transform: scale(1.1);
+            border-color: #ff6b6b; /* Highlight active thumbnail */
+        }
+
+        .thumbnail:hover {
+            opacity: 0.9;
+        }
+
+        .close-gallery, .slider-prev-btn, .slider-next-btn { /* Renamed for clarity */
+            color: #fff;
+            cursor: pointer;
+            font-size: 2rem;
+            z-index: 1001;
+            background: rgba(255, 182, 193, 0.5);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .close-gallery:hover, .slider-prev-btn:hover, .slider-next-btn:hover {
+            background: #ff6b6b;
+        }
+
+        .close-gallery {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .slider-prev-btn {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+        }
+
+        .slider-next-btn {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
+
+        /* Birthday Card */
+        .card-trigger {
+            margin: 40px auto; /* Tăng margin */
+            cursor: pointer;
+            width: 380px; /* Tăng kích thước thiệp */
+            height: 270px; /* Tăng kích thước thiệp */
+            position: relative;
+        }
+
+        .card-envelope {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(160deg, #ff6b6b 0%, #ff99cc 100%); /* Gradient chéo */
+            border-radius: 15px; /* Bo tròn hơn */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Bóng đổ rõ hơn */
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #ffd700; /* Viền vàng đậm hơn */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Thêm transition cho box-shadow */
+        }
+
+        .card-envelope::before {
+            content: '';
+            position: absolute;
+            top: -10px; /* Điều chỉnh vị trí */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%; /* Rộng hơn */
+            height: 40px; /* Cao hơn */
+            background: linear-gradient(to top, #ffd700, transparent); /* Tạo hình nắp thư */
+            border-radius: 10px 10px 0 0;
+            z-index: 1;
+        }
+
+        .card-envelope::after { /* Hiệu ứng lượn sóng */
+            content: '';
+            position: absolute;
+            bottom: -5px; /* Điều chỉnh vị trí */
+            left: 0;
+            width: 100%;
+            height: 25px; /* Cao hơn */
+            background: repeating-linear-gradient(
+                -45deg,
+                #ffccde,
+                #ffccde 5px,
+                #ffb6c1 5px,
+                #ffb6c1 10px
+            );
+            /* Sử dụng repeating-linear-gradient cho hiệu ứng sọc */
+            transform: translateY(10px);
+            opacity: 0.9;
+        }
+
+        .card-trigger:hover .card-envelope {
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5); /* Bóng đổ rõ hơn */
+        }
+
+        .card-ribbon {
+            position: absolute;
+            top: 20%; /* Điều chỉnh vị trí ribbon */
+            left: 0;
+            width: 100%;
+            height: 35px; /* Cao hơn */
+            background: #ffd700;
+            opacity: 0.9;
+            z-index: 2; /* Đảm bảo ribbon nằm trên các hiệu ứng khác */
+        }
+
+        .card-instruction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem; /* Lớn hơn */
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.6); /* Đậm hơn */
+            padding: 8px 15px; /* Padding lớn hơn */
+            border-radius: 8px; /* Bo tròn hơn */
+            animation: pulse 1.5s infinite; /* Hiệu ứng nhấp nháy */
+            z-index: 3; /* Đảm bảo nằm trên ribbon */
+            pointer-events: none; /* Không chặn click vào thiệp */
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.03); }
+            100% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .card-container {
+            display: none; /* Changed from flex to none */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-container.active {
+            display: flex;
+        }
+
+        .card-quiz {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            display: none; /* Hidden by default */
+        }
+
+        .card-quiz h2 {
+            font-size: 1.8rem;
+            color: #ff4757;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 10px;
+            border: 2px solid #ff99cc;
+            border-radius: 10px;
+            background: rgba(255, 182, 193, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            font-size: 1rem;
+            color: #ff4757;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        /* Card Animation (simplified for letter style) */
+        .card-animation {
+            position: relative;
+            width: 500px; /* Rộng hơn để giống lá thư */
+            height: 600px; /* Cao hơn để giống lá thư */
+            background: #fff; /* Nền trắng của lá thư */
+            border: 5px solid #ff99cc; /* Viền dày và đẹp */
+            border-radius: 15px; /* Bo tròn góc */
+            overflow: hidden;
+            display: none; /* Hidden by default */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Bóng đổ cho thiệp */
+            transition: all 0.5s ease;
+        }
+
+        .card-animation.active {
+            display: flex; /* Thay vì block */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-paper {
+            position: relative; /* Không còn absolute nữa */
+            width: 90%; /* Chiếm phần lớn diện tích */
+            height: 90%;
+            background: #fff;
+            border: 2px dashed #ff99cc;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1.2rem; /* Chữ to hơn */
+            color: #ff4757;
+            padding: 30px; /* Padding lớn hơn */
+            transform: scale(0); /* Ban đầu ẩn */
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .card-paper.revealed {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .happy-birthday {
+            font-size: 2.5rem; /* Lớn hơn nữa */
+            color: #ff4757;
+            animation: bounceIn 1s ease;
+            margin-bottom: 20px; /* Khoảng cách lớn hơn */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            /* Đảm bảo ẩn khi không active */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .card-message.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+
+        .card-message-content {
+            background: #fff;
+            padding: 40px; /* Tăng padding để nội dung lớn hơn */
+            border: 2px dashed #ff99cc;
+            border-radius: 20px;
+            max-width: 800px; /* Tăng kích thước tối đa */
+            width: 95%; /* Chiếm 95% chiều rộng màn hình */
+            text-align: center;
+            transform: scale(0);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+            position: relative; /* For confetti positioning */
+        }
+
+        .card-message-content.open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .card-message-content h2 {
+            font-size: 2.8rem; /* Tiêu đề lớn hơn */
+            color: #ff4757;
+            margin-bottom: 30px; /* Khoảng cách lớn hơn */
+        }
+
+        .card-message-content p {
+            font-size: 1.6rem; /* Nội dung lớn hơn */
+            color: #333;
+            line-height: 1.8; /* Khoảng cách dòng lớn hơn */
+            margin-bottom: 15px; /* Khoảng cách giữa các đoạn */
+        }
+
+        .card-message-content .signature {
+            font-style: italic;
+            font-size: 1.4rem; /* Chữ ký lớn hơn */
+            margin-top: 40px; /* Khoảng cách lớn hơn */
+            text-align: right;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .close-message {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.8rem; /* Nút đóng lớn hơn */
+            color: #ff4757;
+            cursor: pointer;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .close-message:hover {
+            background: #ffcccc;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700; /* Default, will be overridden by JS */
+            border-radius: 50%;
+            animation: confettiFall 2s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Gate Effect */
+        .gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.5);
+            transition: all 1.5s ease;
+        }
+
+        .gate.active {
+            opacity: 1;
+            transform: scale(2);
+        }
+
+        /* Animations */
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .time { font-size: 3rem; }
+            .date { font-size: 1.2rem; }
+            h1 { font-size: 2.2rem; }
+            .passcode-key { width: 50px; height: 50px; font-size: 1.5rem; }
+            .tv-frame { width: 95%; max-width: 400px; padding: 15px;}
+            .slider-container { height: 50vh; }
+            .card-trigger { width: 300px; height: 220px; margin: 30px auto;} /* Kích thước thiệp trên mobile */
+            .card-instruction { font-size: 1rem; padding: 5px 10px; }
+            .card-animation { width: 90%; height: 500px; }
+            .card-quiz, .card-message-content { width: 95%; padding: 25px; }
+            .card-message-content p { font-size: 1.3rem; }
+            .card-message-content h2 { font-size: 2.2rem; }
+            .card-message-content .signature { font-size: 1.2rem; margin-top: 30px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="lock-screen" id="lockScreen" role="dialog" aria-label="Màn hình khóa">
+        <div class="time" id="time"></div>
+        <div class="date" id="date"></div>
+        <div class="passcode-container">
+            <div class="passcode-error" id="passcodeError">Sai mật khẩu! Châu Thị Khả Ái Vui lòng thử lại nhóeee.</div>
+            <div class="passcode-input" aria-label="Nhập mật khẩu">
+                <div class="passcode-dot" aria-hidden="true"></div>
+                <div class="passcode-dot" aria-hidden="true"></div>
+                <div class="passcode-dot" aria-hidden="true"></div>
+                <div class="passcode-dot" aria-hidden="true"></div>
+            </div>
+            <div class="passcode-keypad" role="grid">
+                <div class="passcode-key" data-key="1" role="button" aria-label="Số 1">1</div>
+                <div class="passcode-key" data-key="2" role="button" aria-label="Số 2">2</div>
+                <div class="passcode-key" data-key="3" role="button" aria-label="Số 3">3</div>
+                <div class="passcode-key" data-key="4" role="button" aria-label="Số 4">4</div>
+                <div class="passcode-key" data-key="5" role="button" aria-label="Số 5">5</div>
+                <div class="passcode-key" data-key="6" role="button" aria-label="Số 6">6</div>
+                <div class="passcode-key" data-key="7" role="button" aria-label="Số 7">7</div>
+                <div class="passcode-key" data-key="8" role="button" aria-label="Số 8">8</div>
+                <div class="passcode-key" data-key="9" role="button" aria-label="Số 9">9</div>
+                <div class="passcode-key empty" aria-hidden="true"></div>
+                <div class="passcode-key" data-key="0" role="button" aria-label="Số 0">0</div>
+                <div class="passcode-key delete" data-key="delete" role="button" aria-label="Xóa">⌫</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gate" id="gate"></div>
+
+    <div class="birthday-container" id="birthdayContainer" role="main">
+        <div class="birthday-content">
+            <h1>Duy Khoa Chúc Mừng Khả Ái Sinh Nhật vui vẻe!</h1>
+
+            <div class="tv-frame">
+                <div class="tv-screen" id="mainGalleryDisplay" role="img" aria-label="Ảnh khoảnh khắc lớn">
+                    <img src="" alt="Khoảnh khắc đáng yêu" id="mainGalleryImage">
+                    <div class="tv-static-effect"></div> <div class="tv-scanlines"></div> <div class="main-gallery-nav">
+                        <span class="nav-btn" id="mainPrevBtn" role="button" aria-label="Ảnh trước">❮</span>
+                        <span class="nav-btn" id="mainNextBtn" role="button" aria-label="Ảnh sau">❯</span>
+                    </div>
+                </div>
+                <div class="tv-stand"></div>
+                <div class="tv-button-panel">
+                    <div class="tv-button"></div>
+                    <div class="tv-power-button" id="tvPowerButton" role="button" aria-label="Nút nguồn TV"></div>
+                    <div class="tv-speaker"></div>
+                </div>
+            </div>
+
+            <div class="gallery-slider" id="gallerySlider" role="dialog" aria-label="Bộ sưu tập ảnh">
+                <span class="close-gallery" role="button" aria-label="Đóng bộ sưu tập">×</span>
+                <div class="slider-container">
+                    </div>
+                <div class="thumbnail-nav" id="thumbnailNav" role="navigation"></div>
+                <div class="slider-prev-btn" role="button" aria-label="Ảnh trước">❮</div>
+                <div class="slider-next-btn" role="button" aria-label="Ảnh sau">❯</div>
+            </div>
+
+            <div class="card-trigger" id="cardTrigger" role="button" aria-label="Mở thiệp chúc mừng">
+                <div class="card-envelope">
+                    <div class="card-ribbon"></div>
+                    <div class="card-instruction">Khả Ái Nhấn vào đây để mở thiệp nha!!</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container" id="cardContainer">
+            <div class="card-quiz" id="cardQuiz">
+                <h2> Khả Ái mong muốn điều gì nhất trong cuộc sống n</h2>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-answer="Cuộc sống hạnh phúc">Cuộc sống hạnh phúc</div>
+                    <div class="quiz-option" data-answer="Bản thân khỏe mạnh">Bản thân khỏe mạnh</div>
+                    <div class="quiz-option" data-answer="Ba mẹ khỏe mạnh">Ba mẹ khỏe mạnh</div>
+                    <div class="quiz-option" data-answer="Sức khỏe viên mãn">Sức khỏe viên mãn</div>
+                    <div class="quiz-option" data-answer="Tiền vô như nước">Tiền vô như nước</div>
+                    <div class="quiz-option" data-answer="Mọi chuyện suôn sẻ">Khoa vui vẻ hạnh phúc tràn đầy niềm vui</div>
+                    <div class="quiz-option" data-answer="Tất cả những điều trên">Tất cả những điều trên</div>
+                </div>
+                <div class="quiz-feedback" id="quizFeedback"></div>
+            </div>
+            <div class="card-animation" id="cardAnimation">
+                <div class="card-paper" id="cardPaper">
+                    <div class="happy-birthday">Happy Birthday!</div>
+                    <div>Nhấn để xem lời chúc!</div>
+                </div>
+            </div>
+            <div class="card-message" id="cardMessage">
+                <div class="card-message-content" id="cardMessageContent">
+                    <span class="close-message" role="button" aria-label="Đóng lời chúc">×</span>
+                    <h2>Chúc Mừng Sinh Nhật!</h2>
+                    <p>
+                        Chúc mừng sinh nhật  Khả Ái nhé Chúc Khả Ái luôn xinh đẹp, trẻ trung, thành công và gặt hái thật nhiều thành quả trong học tập, cuộc sống. 🥳<br>
+                        Mong rằng ngày hôm nay Khả Ái sẽ có một ngày sinh nhật thật ý nghĩa bên gia đình và những người thân yêu. Luôn hạnh phúc và vui vẻ nhé! ❤️
+                    </p>
+					<p class="signature">Ngày 30 tháng 12 năm 2025</p>
+                    <p class="signature">Nguyễn Duy Khoa</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="unlockSound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"></audio>
+    <audio id="balloonPopSound" src="https://assets.mixkit.co/sfx/preview/mixkit-balloon-pop-3067.mp3"></audio>
+    <audio id="birthdayMusic" loop src="https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-653.mp3"></audio>
+    <audio id="cardOpenSound" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkles-302.mp3"></audio>
+    <audio id="tvTurnOnSound" src="https://assets.mixkit.co/sfx/preview/mixkit-tv-turn-on-1707.mp3"></audio>
+    <audio id="tvTurnOffSound" src="https://assets.mixkit.co/sfx/preview/mixkit-tv-turn-off-1706.mp3"></audio>
+
+    <script>
+        // Utility Functions
+        const $ = (selector) => document.querySelector(selector);
+        const $$ = (selector) => document.querySelectorAll(selector);
+
+        // Time Update
+        function updateTime() {
+            const now = new Date();
+            const optionsTime = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Ho_Chi_Minh' };
+            const optionsDate = { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Ho_Chi_Minh' };
+            $('#time').textContent = now.toLocaleTimeString('vi-VN', optionsTime);
+            $('#date').textContent = new Intl.DateTimeFormat('vi-VN', optionsDate).format(now);
+            setTimeout(updateTime, 1000);
+        }
+        updateTime();
+
+        // Passcode Handling
+        const correctPasscode = '3012';
+        let enteredPasscode = '';
+        let attemptCount = 0;
+        const maxAttempts = 3;
+        let isLocked = false;
+
+        $$('.passcode-key:not(.empty)').forEach(key => {
+            key.addEventListener('click', () => {
+                if (isLocked) return;
+                const value = key.dataset.key;
+                if (value === 'delete') {
+                    enteredPasscode = enteredPasscode.slice(0, -1);
+                } else if (enteredPasscode.length < 4) {
+                    enteredPasscode += value;
+                }
+                updatePasscodeDots();
+                if (enteredPasscode.length === 4) {
+                    if (enteredPasscode === correctPasscode) {
+                        unlockDevice();
+                    } else {
+                        attemptCount++;
+                        enteredPasscode = '';
+                        updatePasscodeDots();
+                        $('#passcodeError').classList.add('show');
+                        $$('.passcode-dot').forEach(dot => {
+                            dot.style.animation = 'shake 0.5s ease';
+                            setTimeout(() => dot.style.animation = '', 500);
+                        });
+                        setTimeout(() => $('#passcodeError').classList.remove('show'), 2000);
+                        if (attemptCount >= maxAttempts) {
+                            isLocked = true;
+                            $('#passcodeError').textContent = 'Quá nhiều lần thử! Vui lòng đợi 30 giây.';
+                            $('#passcodeError').classList.add('show');
+                            setTimeout(() => {
+                                isLocked = false;
+                                attemptCount = 0;
+                                $('#passcodeError').textContent = 'Sai mật khẩu! Vui lòng thử lại.';
+                                $('#passcodeError').classList.remove('show');
+                            }, 30000);
+                        }
+                    }
+                }
+            });
+        });
+
+        function updatePasscodeDots() {
+            $$('.passcode-dot').forEach((dot, i) => {
+                dot.classList.toggle('filled', i < enteredPasscode.length);
+            });
+        }
+
+        function unlockDevice() {
+            $('#unlockSound').play();
+            $('#gate').classList.add('active');
+            setTimeout(() => {
+                $('#lockScreen').style.opacity = '0';
+                $('#birthdayContainer').style.display = 'flex';
+                createBalloons();
+                createFallingStars();
+                createHeartRain();
+                startAutoSlide(); // Start auto slide for TV
+                setTimeout(() => {
+                    $('#lockScreen').style.display = 'none';
+                    $('#gate').classList.remove('active');
+                    // Add sparkle trail after unlock
+                    document.addEventListener('mousemove', createSparkle);
+                }, 1500);
+            }, 1000);
+        }
+
+        // Balloon Animation
+        const balloonColors = [
+            ['#ff6b6b', '#ff99cc'], // Red-Pink
+            ['#add8e6', '#87ceeb'], // Light Blue-Sky Blue
+            ['#ffd700', '#ffa500'], // Gold-Orange
+            ['#98fb98', '#3cb371'], // Pale Green-Medium Sea Green
+            ['#dda0dd', '#ee82ee']  // Plum-Violet
+        ];
+
+        function createBalloons() {
+            const container = $('#birthdayContainer');
+            for (let i = 0; i < 15; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                const colors = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+                balloon.style.setProperty('--balloon-color1', colors[0]);
+                balloon.style.setProperty('--balloon-color2', colors[1]);
+                balloon.style.left = `${Math.random() * 100}%`;
+                balloon.style.animationDelay = `${Math.random() * 5}s`;
+                balloon.addEventListener('click', () => {
+                    $('#balloonPopSound').play();
+                    balloon.style.display = 'none';
+                    for (let j = 0; j < 5; j++) {
+                        const heart = document.createElement('div');
+                        heart.className = 'heart-particle';
+                        heart.textContent = '💖';
+                        heart.style.left = `${balloon.getBoundingClientRect().left + balloon.offsetWidth / 2}px`;
+                        heart.style.top = `${balloon.getBoundingClientRect().top + balloon.offsetHeight / 2}px`;
+                        heart.style.setProperty('--tx', `${(Math.random() - 0.5) * 100}px`);
+                        heart.style.setProperty('--ty', `${(Math.random() - 0.5) * 100}px`);
+                        container.appendChild(heart);
+                        setTimeout(() => heart.remove(), 1000);
+                    }
+                });
+                container.appendChild(balloon);
+            }
+        }
+
+        // Falling Stars Animation
+        function createFallingStars() {
+            const container = $('#birthdayContainer');
+            for (let i = 0; i < 20; i++) { // Số lượng sao rơi
+                const star = document.createElement('div');
+                star.className = 'falling-star';
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`); // Thời gian rơi từ 2-5s
+                star.style.setProperty('--travelX', `${(Math.random() - 0.5) * 200}px`); // Ngẫu nhiên độ lệch ngang
+                container.appendChild(star);
+                setTimeout(() => star.remove(), (parseFloat(star.style.getPropertyValue('--duration')) * 1000) + 1000); // Xóa sau khi hết animation
+            }
+        }
+
+        // Heart Rain Animation
+        function createHeartRain() {
+            const container = $('#birthdayContainer');
+            setInterval(() => {
+                for (let i = 0; i < 5; i++) { // Thả 5 trái tim mỗi lần
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-rain';
+                    heart.textContent = '❤️';
+                    heart.style.left = `${Math.random() * 100}vw`;
+                    heart.style.animationDelay = `${Math.random() * 0.5}s`;
+                    heart.style.setProperty('--duration', `${Math.random() * 4 + 3}s`); // Thời gian rơi 3-7s
+                    container.appendChild(heart);
+                    setTimeout(() => heart.remove(), (parseFloat(heart.style.getPropertyValue('--duration')) * 1000) + 1000);
+                }
+            }, 2000); // Mỗi 2 giây thả một đợt tim
+        }
+
+        // Sparkle Trail on Mouse Move
+        function createSparkle(e) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = `${e.clientX - 5}px`;
+            sparkle.style.top = `${e.clientY - 5}px`;
+            $('#birthdayContainer').appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 800); // Xóa sau 0.8s
+        }
+
+        // Gallery - Enhanced Slideshow
+        const galleryImagesData = [
+            { src: "a1.png", caption: "Khoảnh khắc đáng yêu 1" },
+            { src: "a2.png", caption: "Khoảnh khắc đáng yêu 2" },
+            { src: "a3.png", caption: "Khoảnh khắc đáng yêu 3" },
+            { src: "a4.png", caption: "Khoảnh khắc đáng yêu 4" },
+			{ src: "a5.png", caption: "Khoảnh khắc đáng yêu 1" },
+            { src: "a6.png", caption: "Khoảnh khắc đáng yêu 2" },
+            { src: "a7.png", caption: "Khoảnh khắc đáng yêu 3" },
+            { src: "a8.png", caption: "Khoảnh khắc đáng yêu 4" },
+			{ src: "a9.png", caption: "Khoảnh khắc đáng yêu 1" },
+            { src: "a10.png", caption: "Khoảnh khắc đáng yêu 2" },
+           
+        ];
+
+        let currentMainImageIndex = 0; // Index for the single main image
+        let currentSliderIndex = 0;   // Index for the fullscreen slider
+        let autoSlideInterval; // Variable to hold the interval for auto-sliding
+
+        function updateMainGalleryDisplay() {
+            const mainImg = $('#mainGalleryImage');
+            // Ensure TV is on before updating image
+            if (!$("#mainGalleryDisplay").classList.contains("off")) {
+                mainImg.src = galleryImagesData[currentMainImageIndex].src;
+                mainImg.alt = galleryImagesData[currentMainImageIndex].caption;
+            }
+        }
+
+        function goToNextMainImage() {
+            currentMainImageIndex = (currentMainImageIndex + 1) % galleryImagesData.length;
+            updateMainGalleryDisplay();
+            resetAutoSlide(); // Reset timer on manual interaction
+        }
+
+        function goToPrevMainImage() {
+            currentMainImageIndex = (currentMainImageIndex - 1 + galleryImagesData.length) % galleryImagesData.length;
+            updateMainGalleryDisplay();
+            resetAutoSlide(); // Reset timer on manual interaction
+        }
+
+        function startAutoSlide() {
+            // Clear any existing interval to prevent multiple intervals running
+            clearInterval(autoSlideInterval);
+            autoSlideInterval = setInterval(() => {
+                // Only auto-slide if TV is on and fullscreen slider is not active
+                if (isTvOn && !$('#gallerySlider').classList.contains('active')) {
+                    goToNextMainImage();
+                }
+            }, 2000); // Change image every 2 seconds
+        }
+
+        function resetAutoSlide() {
+            // Clear current interval and restart it
+            clearInterval(autoSlideInterval);
+            startAutoSlide();
+        }
+
+        function initGallery() {
+            const sliderContainer = $('.slider-container');
+            const thumbnailNav = $('#thumbnailNav');
+
+            // Initialize main display
+            updateMainGalleryDisplay();
+            $('#mainPrevBtn').addEventListener('click', (e) => { e.stopPropagation(); goToPrevMainImage(); }); // Stop propagation to prevent TV power
+            $('#mainNextBtn').addEventListener('click', (e) => { e.stopPropagation(); goToNextMainImage(); }); // Stop propagation to prevent TV power
+            $('#mainGalleryDisplay').addEventListener('click', (e) => {
+                if (!$("#mainGalleryDisplay").classList.contains("off")) {
+                    openFullscreenSlider();
+                }
+                e.stopPropagation(); // Prevent TV power toggle
+            });
+
+            // Clear existing images and thumbnails from fullscreen slider
+            sliderContainer.innerHTML = '';
+            thumbnailNav.innerHTML = '';
+
+            galleryImagesData.forEach((imageData, i) => {
+                // Create slider image for fullscreen
+                const sliderImg = document.createElement('img');
+                sliderImg.className = 'slider-image';
+                sliderImg.src = imageData.src;
+                sliderImg.alt = imageData.caption;
+                sliderImg.dataset.caption = imageData.caption;
+                sliderContainer.appendChild(sliderImg);
+
+                // Create thumbnail
+                const thumb = document.createElement('img');
+                thumb.className = 'thumbnail';
+                thumb.src = imageData.src;
+                thumb.alt = imageData.caption;
+                thumb.dataset.index = i;
+                thumb.addEventListener('click', () => goToSliderSlide(i));
+                thumbnailNav.appendChild(thumb);
+            });
+
+            $('.close-gallery').addEventListener('click', closeGallery);
+            $('.slider-prev-btn').addEventListener('click', () => {
+                goToSliderSlide((currentSliderIndex - 1 + galleryImagesData.length) % galleryImagesData.length);
+                resetAutoSlide(); // Reset timer on manual interaction
+            });
+            $('.slider-next-btn').addEventListener('click', () => {
+                goToSliderSlide((currentSliderIndex + 1) % galleryImagesData.length);
+                resetAutoSlide(); // Reset timer on manual interaction
+            });
+            $('.slider-container').addEventListener('click', (e) => {
+                // Only advance slide if click is on the image, not the container background
+                if (e.target.classList.contains('slider-image')) {
+                    goToSliderSlide((currentSliderIndex + 1) % galleryImagesData.length);
+                    resetAutoSlide(); // Reset timer on manual interaction
+                }
+                e.stopPropagation(); // Prevent closing gallery if clicking on image
+            });
+            $('#gallerySlider').addEventListener('click', (e) => { // Only close if clicking on the background
+                if (e.target.id === 'gallerySlider') {
+                    closeGallery();
+                }
+            });
+
+            let touchStartX = 0, touchEndX = 0;
+            $('.slider-container').addEventListener('touchstart', (e) => touchStartX = e.changedTouches[0].screenX);
+            $('.slider-container').addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchEndX < touchStartX - 50) goToSliderSlide((currentSliderIndex + 1) % galleryImagesData.length);
+                if (touchEndX > touchStartX + 50) goToSliderSlide((currentSliderIndex - 1 + galleryImagesData.length) % galleryImagesData.length);
+                resetAutoSlide(); // Reset timer on manual interaction
+            });
+        }
+
+        function openFullscreenSlider() {
+            $('#gallerySlider').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            // Start the fullscreen slider from the image currently displayed on the main page
+            goToSliderSlide(currentMainImageIndex);
+            clearInterval(autoSlideInterval); // Stop auto-slide when fullscreen slider is open
+        }
+
+        function goToSliderSlide(index) {
+            const sliderImages = $$('.slider-image');
+            const thumbnails = $$('.thumbnail');
+
+            sliderImages.forEach(img => img.classList.remove('active'));
+            sliderImages[index].classList.add('active');
+
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            thumbnails[index].classList.add('active');
+
+            currentSliderIndex = index;
+
+            // Scroll thumbnail into view
+            thumbnails[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        function closeGallery() {
+            $('#gallerySlider').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            startAutoSlide(); // Restart auto-slide when fullscreen slider is closed
+        }
+
+        initGallery(); // Call initGallery once DOM is ready
+
+        // TV Power Button functionality
+        const tvScreen = $('#mainGalleryDisplay');
+        const tvPowerButton = $('#tvPowerButton');
+        let isTvOn = true;
+
+        tvPowerButton.addEventListener('click', () => {
+            if (isTvOn) {
+                // Turn off TV
+                tvScreen.classList.add('off');
+                $('#tvTurnOffSound').play();
+                clearInterval(autoSlideInterval); // Stop auto-slide when TV is off
+            } else {
+                // Turn on TV
+                tvScreen.classList.remove('off');
+                $('#tvTurnOnSound').play();
+                updateMainGalleryDisplay(); // Show current image after turning on
+                startAutoSlide(); // Restart auto-slide when TV is on
+            }
+            isTvOn = !isTvOn; // Toggle state
+        });
+
+        // Birthday Card Functionality
+
+        // Event listener for opening the card container
+        $('#cardTrigger').addEventListener('click', () => {
+            $('#cardContainer').classList.add('active');
+            $('#cardQuiz').style.display = 'block'; // Show the quiz first
+            $('#cardAnimation').classList.remove('active'); // Hide card animation initially
+            $('#cardMessage').classList.remove('active'); // Ensure message is hidden
+            $('#cardMessageContent').classList.remove('open'); // Ensure message content is hidden
+            $('#quizFeedback').classList.remove('show'); // Hide any previous quiz feedback
+            $('#cardPaper').classList.remove('revealed'); // Reset paper for new reveal
+            $('#birthdayMusic').pause(); // Tạm dừng nhạc nền khi mở quiz/thiệp
+            $('#birthdayMusic').currentTime = 0; // Reset nhạc về đầu
+            clearInterval(autoSlideInterval); // Stop auto-slide when card is opened
+        });
+
+        // Quiz logic
+        $$('.quiz-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const answer = option.dataset.answer;
+                const quizFeedback = $('#quizFeedback');
+
+                // Đáp án đúng giờ đây là "Tất cả những điều trên"
+                const correctAnswer = "Tất cả những điều trên";
+
+                if (answer === correctAnswer) { // Correct answer logic
+                    $('#unlockSound').play(); // Play a success sound
+                    quizFeedback.textContent = 'Chính xác! Chuẩn bị nhận quà nào!';
+                    quizFeedback.style.color = '#4CAF50'; // Green color for success
+                    quizFeedback.classList.add('show');
+
+                    setTimeout(() => {
+                        $('#cardQuiz').style.display = 'none'; // Hide the quiz
+                        $('#cardAnimation').classList.add('active'); // Show the card animation
+                        $('#cardPaper').classList.add('revealed'); // Reveal the paper immediately for letter style
+                        $('#cardOpenSound').play(); // Play card open sound
+                    }, 2000); // Give user time to read feedback
+                } else { // Incorrect answer logic
+                    quizFeedback.textContent = 'Sai rồi! Thử lại nhé!';
+                    quizFeedback.style.color = '#ff4757'; // Red color for error
+                    quizFeedback.classList.add('show');
+                    // Shake the quiz container for immediate feedback
+                    $('#cardQuiz').style.animation = 'shake 0.5s ease';
+                    setTimeout(() => $('#cardQuiz').style.animation = '', 500);
+                }
+            });
+        });
+
+        // Event listener to open the full message from the card paper
+        $('#cardPaper').addEventListener('click', () => {
+            $('#cardAnimation').classList.remove('active'); // Hide the card animation
+            $('#cardMessage').classList.add('active'); // Show the full message container
+            $('#birthdayMusic').play(); // Phát nhạc Happy Birthday khi mở thư
+            // Trigger message content animation after a short delay
+            setTimeout(() => {
+                $('#cardMessageContent').classList.add('open');
+            }, 100);
+            createConfetti(); // Create confetti effect
+        });
+
+        // Event listener to close the full message
+        $('.close-message').addEventListener('click', () => {
+            $('#cardMessageContent').classList.remove('open');
+            setTimeout(() => {
+                $('#cardMessage').classList.remove('active');
+                $('#cardContainer').classList.remove('active'); // Close the entire card container
+                $('#birthdayMusic').pause(); // Tạm dừng nhạc khi đóng thiệp
+                $('#birthdayMusic').currentTime = 0; // Reset nhạc về đầu
+                startAutoSlide(); // Restart auto-slide when card is closed
+            }, 500); // Match with CSS transition
+        });
+
+        // Confetti animation
+        function createConfetti() {
+            const messageContent = $('#cardMessageContent');
+            const colors = ['#ff4757', '#ff6b6b', '#ff99cc', '#ffd700', '#fff0f5']; // More vibrant colors
+            // Clear existing confetti if any
+            messageContent.querySelectorAll('.confetti').forEach(c => c.remove());
+
+            for (let i = 0; i < 50; i++) { // Generate 50 confetti particles
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                // Random position within the message content
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.top = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = `${Math.random() * 1}s`; // Stagger animation
+                messageContent.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000); // Remove after animation
+            }
+        }
+    </script>
+</body>
+</html>
